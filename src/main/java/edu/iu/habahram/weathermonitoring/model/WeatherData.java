@@ -22,7 +22,33 @@ public class WeatherData implements Subject{
 
     private void startMeasuring() {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(sensorsChanged, 0, 3, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(() -> {
+            // Generate realistic temperature, humidity, and pressure values.
+            // For example:
+            float newTemp = getRandomTemperature();
+            float newHumidity = getRandomHumidity();
+            float newPressure = getRandomPressure();
+
+            setMeasurements(newTemp, newHumidity, newPressure);
+        }, 0, 3, TimeUnit.SECONDS);
+    }
+
+    private float getRandomTemperature() {
+        // Return a realistic temperature value.
+        // For example, between -10.0°C (14°F) and 40.0°C (104°F):
+        return -10.0f + (float)(Math.random() * 50.0);
+    }
+
+    private float getRandomHumidity() {
+        // Return a realistic humidity value.
+        // For example, between 0% and 100%:
+        return (float)(Math.random() * 100.0);
+    }
+
+    private float getRandomPressure() {
+        // Return a realistic pressure value.
+        // For example, between 980 hPa and 1050 hPa:
+        return 980.0f + (float)(Math.random() * 70.0);
     }
 
     Runnable sensorsChanged = () -> {

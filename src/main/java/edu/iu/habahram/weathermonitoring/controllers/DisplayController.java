@@ -1,9 +1,6 @@
 package edu.iu.habahram.weathermonitoring.controllers;
 
-import edu.iu.habahram.weathermonitoring.model.CurrentConditionDisplay;
-import edu.iu.habahram.weathermonitoring.model.ForecastDisplay;
-import edu.iu.habahram.weathermonitoring.model.Observer;
-import edu.iu.habahram.weathermonitoring.model.StatisticsDisplay;
+import edu.iu.habahram.weathermonitoring.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +9,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/displays")
 public class DisplayController {
     private CurrentConditionDisplay currentConditionDisplay;
+    private StatisticsDisplay statisticsDisplay;
+    private HeatIndexDisplay heatIndexDisplay;
 
-    public DisplayController(CurrentConditionDisplay currentConditionDisplay
-                             ) {
+    public DisplayController(CurrentConditionDisplay currentConditionDisplay,
+                             StatisticsDisplay statisticsDisplay,
+                             HeatIndexDisplay heatIndexDisplay) {
         this.currentConditionDisplay = currentConditionDisplay;
+        this.statisticsDisplay = statisticsDisplay;
+        this.heatIndexDisplay = heatIndexDisplay; // Inject the HeatIndexDisplay
     }
 
     @GetMapping
@@ -25,6 +27,15 @@ public class DisplayController {
         html += "<ul>";
         html += "<li>";
         html += String.format("<a href=/displays/%s>%s</a>", currentConditionDisplay.id(), currentConditionDisplay.name());
+        html += "</li>";
+        // new statistics display link
+        html += "<li>";
+        html += String.format("<a href=/displays/%s>%s</a>", statisticsDisplay.id(), statisticsDisplay.name());
+        html += "</li>";
+        html += "</ul>";
+        // Add a new link for the Heat Index display
+        html += "<li>";
+        html += String.format("<a href=/displays/%s>%s</a>", heatIndexDisplay.id(), heatIndexDisplay.name());
         html += "</li>";
 
         html += "</ul>";
@@ -38,14 +49,25 @@ public class DisplayController {
     public ResponseEntity display(@PathVariable String id) {
         String html = "";
         HttpStatus status = HttpStatus.NOT_FOUND;
+
         if (id.equalsIgnoreCase(currentConditionDisplay.id())) {
             html = currentConditionDisplay.display();
             status = HttpStatus.FOUND;
+        } else if (id.equalsIgnoreCase(statisticsDisplay.id())) {
+            html = statisticsDisplay.display();
+            status = HttpStatus.FOUND;
         }
+
+        if (id.equalsIgnoreCase(heatIndexDisplay.id())) {
+            html = heatIndexDisplay.display();
+            status = HttpStatus.FOUND;
+        }
+
         return ResponseEntity
                 .status(status)
                 .body(html);
     }
+
 
     @GetMapping("/{id}/subscribe")
     public ResponseEntity subscribe(@PathVariable String id) {
@@ -59,6 +81,12 @@ public class DisplayController {
             html = "The screen id is invalid.";
             status = HttpStatus.NOT_FOUND;
         }
+        if (id.equalsIgnoreCase(heatIndexDisplay.id())) {
+            heatIndexDisplay.subscribe();
+            html = "Subscribed!";
+            status = HttpStatus.FOUND;
+        }
+
         return ResponseEntity
                 .status(status)
                 .body(html);
@@ -76,8 +104,16 @@ public class DisplayController {
             html = "The screen id is invalid.";
             status = HttpStatus.NOT_FOUND;
         }
+        if (id.equalsIgnoreCase(heatIndexDisplay.id())) {
+            heatIndexDisplay.unsubscribe();
+            html = "Unsubscribed!";
+            status = HttpStatus.FOUND;
+        }
+
         return ResponseEntity
                 .status(status)
                 .body(html);
     }
+
+
 }
