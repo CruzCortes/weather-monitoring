@@ -14,7 +14,7 @@ public class StatisticsDisplay implements Observer, DisplayElement {
     public StatisticsDisplay(WeatherData weatherData) {
         this.id = "statistics";
         this.name = "Weather Stats";
-        subscribe(weatherData); // Subscribe to WeatherData
+        subscribe(weatherData);
     }
     @Override
     public void update(float temp, float humidity, float pressure) {
@@ -29,7 +29,7 @@ public class StatisticsDisplay implements Observer, DisplayElement {
             minTemp = temp;
         }
 
-        display(); // Optionally call display to update the output immediately
+        display();
     }
 
     public String display() {

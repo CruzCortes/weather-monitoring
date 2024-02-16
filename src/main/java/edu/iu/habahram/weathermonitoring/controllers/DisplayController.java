@@ -17,7 +17,7 @@ public class DisplayController {
                              HeatIndexDisplay heatIndexDisplay) {
         this.currentConditionDisplay = currentConditionDisplay;
         this.statisticsDisplay = statisticsDisplay;
-        this.heatIndexDisplay = heatIndexDisplay; // Inject the HeatIndexDisplay
+        this.heatIndexDisplay = heatIndexDisplay;
     }
 
     @GetMapping
@@ -33,7 +33,7 @@ public class DisplayController {
         html += String.format("<a href=/displays/%s>%s</a>", statisticsDisplay.id(), statisticsDisplay.name());
         html += "</li>";
         html += "</ul>";
-        // Add a new link for the Heat Index display
+        // new link for the Heat Index display
         html += "<li>";
         html += String.format("<a href=/displays/%s>%s</a>", heatIndexDisplay.id(), heatIndexDisplay.name());
         html += "</li>";
